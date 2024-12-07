@@ -113,6 +113,77 @@ def transform_to_mexican(ingredients, steps):
     return transformed_ingredients, transformed_steps
 
 
+def transform_to_gluten_free(ingredients, steps):
+    gluten_free_substitutes = {
+        "flour": "gluten-free all-purpose flour",
+        "wheat flour": "gluten-free all-purpose flour",
+        "breadcrumbs": "gluten-free breadcrumbs",
+        "pasta": "gluten-free pasta",
+        "lasagna noodles": "gluten-free lasagna noodles",
+        "soy sauce": "gluten-free tamari",
+        "barley": "quinoa",
+        "rye": "millet",
+        "couscous": "cauliflower rice",
+        "crackers": "gluten-free crackers",
+        "milk": "lactose-free milk",
+        "butter": "lactose-free butter",
+        "cream": "lactose-free cream",
+        "cheese": "lactose-free cheese",
+        "yogurt": "lactose-free yogurt",
+    }
+
+    transformed_ingredients = []
+    for ingredient in ingredients:
+        for original, substitute in gluten_free_substitutes.items():
+            ingredient = ingredient.replace(original, substitute)
+        transformed_ingredients.append(ingredient)
+
+    transformed_steps = []
+    for step in steps:
+        for original, substitute in gluten_free_substitutes.items():
+            step = step.replace(original, substitute)
+        transformed_steps.append(step)
+
+    # print("Original Ingredients:", ingredients)
+    # print("Gluten-Free Ingredients:", transformed_ingredients)
+    # print("\nOriginal Steps:")
+    # print("\n".join(steps))
+    # print("\nGluten-Free Steps:")
+    # print("\n".join(transformed_steps))
+    
+    return transformed_ingredients, transformed_steps
+
+
+def transform_to_lactose_free(ingredients, steps):
+    lactose_free_substitutes = {
+        "milk": "lactose-free milk",
+        "butter": "lactose-free butter",
+        "cream": "lactose-free cream",
+        "cheese": "lactose-free cheese",
+        "parmesan cheese": "lactose-free Parmesan cheese",
+        "mozzarella cheese": "lactose-free mozzarella cheese",
+        "yogurt": "lactose-free yogurt",
+        "cottage cheese": "lactose-free cottage cheese",
+        "sour cream": "lactose-free sour cream",
+        "evaporated milk": "lactose-free evaporated milk",
+        "condensed milk": "lactose-free condensed milk",
+    }
+
+    transformed_ingredients = []
+    for ingredient in ingredients:
+        for original, substitute in lactose_free_substitutes.items():
+            ingredient = ingredient.replace(original, substitute)
+        transformed_ingredients.append(ingredient)
+
+    transformed_steps = []
+    for step in steps:
+        for original, substitute in lactose_free_substitutes.items():
+            step = step.replace(original, substitute)
+        transformed_steps.append(step)
+    
+    return transformed_ingredients, transformed_steps
+
+
 def save_recipe_to_file(filename, title, ingredients, steps):
     with open(filename, "w") as f:
         f.write(f"{title}\n\nIngredients:\n")
@@ -138,6 +209,8 @@ def main():
     print("What cuisine would you like to transform this recipe into?")
     print("[1] Italian")
     print("[2] Mexican")
+    print("[3] Gluten-free")
+    print("[4] Lactose-free")
     cuisine_choice = input("Enter the corresponding number: ").strip()
 
     if cuisine_choice == "1":
@@ -146,6 +219,10 @@ def main():
     elif cuisine_choice == "2":
         new_ingredients, new_steps = transform_to_mexican(ingredients, steps)
         cuisine = "Mexican"
+    elif cuisine_choice == "3":
+        new_ingredients, new_steps = transform_to_gluten_free(ingredients, steps)
+    elif cuisine_choice == "3":
+        new_ingredients, new_steps = transform_to_lactose_free(ingredients, steps)
     else:
         print("Invalid choice. Exiting.")
         return
