@@ -12,8 +12,6 @@ This project uses a variety of web scraping, natural language processing (NLP), 
       
 4. **NLTK**: The Natural Language Toolkit (NLTK) is a comprehensive library for working with human language data (text) in Python, including text classification, tokenization, stemming, tagging, parsing, and more.
 
-5. **fractions**: The fractions module provides support for rational number arithmetic.
-    
 
 ## Setup Instructions
 
