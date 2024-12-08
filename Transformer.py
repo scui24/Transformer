@@ -143,13 +143,6 @@ def transform_to_gluten_free(ingredients, steps):
             step = step.replace(original, substitute)
         transformed_steps.append(step)
 
-    # print("Original Ingredients:", ingredients)
-    # print("Gluten-Free Ingredients:", transformed_ingredients)
-    # print("\nOriginal Steps:")
-    # print("\n".join(steps))
-    # print("\nGluten-Free Steps:")
-    # print("\n".join(transformed_steps))
-    
     return transformed_ingredients, transformed_steps
 
 
@@ -250,16 +243,13 @@ def transform_to_healthy(ingredients, steps):
 def save_recipe_to_file(filename, title, original_ingredients, original_steps, transformed_ingredients, transformed_steps):
     transformations = []
 
-    # Collect transformations for ingredients
     for original, transformed in zip(original_ingredients, transformed_ingredients):
         if original != transformed:  # Only log changes
             transformations.append(f"{original} -> {transformed}")
 
-    # Write to file
     with open(filename, "w") as f:
         f.write(f"{title}\n\n")
         
-        # Add transformation details
         if transformations:
             f.write("Transformations:\n")
             for transformation in transformations:
@@ -268,7 +258,6 @@ def save_recipe_to_file(filename, title, original_ingredients, original_steps, t
         else:
             f.write("No transformations were made to the ingredients.\n\n")
 
-        # Write original recipe
         f.write("Original Recipe:\n")
         f.write("Ingredients:\n")
         for ingredient in original_ingredients:
@@ -277,7 +266,6 @@ def save_recipe_to_file(filename, title, original_ingredients, original_steps, t
         for i, step in enumerate(original_steps, 1):
             f.write(f"{i}. {step}\n")
 
-        # Write transformed recipe
         f.write("\n\nTransformed Recipe:\n")
         f.write("Ingredients:\n")
         for ingredient in transformed_ingredients:
