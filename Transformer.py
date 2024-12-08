@@ -241,6 +241,44 @@ def transform_to_healthy(ingredients, steps):
     return transformed_ingredients, transformed_steps
 
 
+def transform_double(ingredients, steps):
+
+    def double_match(match):
+        token = match.group()
+        if token == '½':
+            doubled = 1
+        elif ' ' in token:
+            whole, fraction = token.split()
+            total = int(whole) + float(Fraction(1, 2))
+            doubled = total * 2
+        else:
+            doubled = int(token) * 2
+
+        return str(int(doubled)) if int(doubled) == doubled else str(doubled)
+
+    new_ingredients = []
+    for ingredient in ingredients:
+        pattern = r'\d+\s+½|½|\d+'
+        updated_ingredient = re.sub(pattern, double_match, ingredient)
+        new_ingredients.append(updated_ingredient)
+
+    def double_match_steps(match):
+        token = match.group()
+        if re.search(r'(degrees|minutes|minute|seconds|second|hour|hours)\b', match.string[match.end():], re.IGNORECASE):
+            return token
+        if re.search(r'(F|C|°)', match.string[match.end():]):
+            return token
+        doubled = int(token) * 2
+        return str(doubled)
+
+    new_steps = []
+    for step in steps:
+        new_step = re.sub(r'\b\d+\b', double_match_steps, step)
+        new_steps.append(new_step)
+
+    return new_ingredients, new_steps
+
+
 def print_recipe(transformations, ingredients, steps):
     print("Transformation type:")
     print(f"- {transformations}")
@@ -301,6 +339,7 @@ def main():
     print("[4] Lactose-free")
     print("[5] Vegetarian")
     print("[6] Healthy")
+    print("[7] Double the amount")
     cuisine_choice = input("Enter the corresponding number: ").strip()
 
     transformation_name = ""
@@ -322,6 +361,9 @@ def main():
     elif cuisine_choice == "6":
         new_ingredients, new_steps = transform_to_healthy(ingredients, steps)
         transformation_name = "Healthy"
+    elif cuisine_choice == "7":
+        new_ingredients, new_steps = transform_double(ingredients, steps)
+        cuisine = "Double the amount"
     else:
         print("Invalid choice. Exiting.")
         return
