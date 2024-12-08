@@ -1,6 +1,6 @@
 import requests
 import re
-from fraction import Fractions
+from fractions import Fraction
 from bs4 import BeautifulSoup
 from nltk.tokenize import sent_tokenize
 
