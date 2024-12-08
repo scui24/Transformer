@@ -240,6 +240,21 @@ def transform_to_healthy(ingredients, steps):
     return transformed_ingredients, transformed_steps
 
 
+def print_recipe(transformations, ingredients, steps):
+    print("Transformation type:")
+    print(f"- {transformations}")
+    print("\n")
+
+    print("Ingredients:")
+    for ingredient in ingredients:
+        print(f"- {ingredient}")
+    print("\n")
+
+    print("Steps:")
+    for step in steps:
+        print(f"- {step}")
+
+
 def save_recipe_to_file(filename, title, original_ingredients, original_steps, transformed_ingredients, transformed_steps):
     transformations = []
 
@@ -316,6 +331,8 @@ def main():
     else:
         print("Invalid choice. Exiting.")
         return
+
+    print_recipe(cuisine, new_ingredients, new_steps)
 
     output_filename = f"{title.replace(' ', '_')}_{cuisine}_Recipe.txt"
     save_recipe_to_file(
