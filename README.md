@@ -11,6 +11,8 @@ This project uses a variety of web scraping, natural language processing (NLP), 
 3. **bs4**: Beautiful Soup is a library that makes it easy to scrape information from web pages. It sits atop an HTML or XML parser, providing Pythonic idioms for iterating, searching, and modifying the parse tree.
       
 4. **NLTK**: The Natural Language Toolkit (NLTK) is a comprehensive library for working with human language data (text) in Python, including text classification, tokenization, stemming, tagging, parsing, and more.
+
+5. **fractions**: The fractions module provides support for rational number arithmetic.
     
 
 ## Setup Instructions
