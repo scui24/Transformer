@@ -261,6 +261,7 @@ def transform_to_healthy(ingredients, steps):
     return transformed_ingredients, transformed_steps
 
 
+<<<<<<< Updated upstream
 def transform_double(ingredients, steps):
     special_fractions = {
         '½': Fraction(1, 2),
@@ -431,6 +432,32 @@ def transform_half(ingredients, steps):
         new_steps.append(updated_string2)
 
     return new_ingredients, new_steps
+=======
+
+def  transformed_double_amount(ingredients, steps):
+     transformed_ingredients = []
+     for ingredient in ingredients:
+         ingredient = re.sub(r"(\d+)(?=[a-zA-Z ])", lambda x: str(int(x.group())*2), ingredient)
+         transformed_ingredients.append(ingredient)
+     transformed_steps = []
+     for step in steps:
+         step = (re.sub(r"(\d+)(?=[a-zA-Z ])", lambda x: str(int(x.group())*2), step))
+         transformed_steps.append(step)
+         
+     return transformed_ingredients, transformed_steps
+    
+def transformed_cut_half_amount(ingredients, steps):
+     transformed_ingredients = []
+     for ingredient in ingredients:
+         ingredient = re.sub(r"(\d+)(?=[a-zA-Z ])", lambda x: str(int(x.group())/2), ingredient)
+         transformed_ingredients.append(ingredient)
+     transformed_steps = []
+     for step in steps:
+         step = (re.sub(r"(\d+)(?=[a-zA-Z ])", lambda x: str(int(x.group())/2), step))
+         transformed_steps.append(step)
+         
+     return transformed_ingredients, transformed_steps
+>>>>>>> Stashed changes
 
 
 def print_recipe(transformations, ingredients, steps):
@@ -493,8 +520,13 @@ def main():
     print("[4] Lactose-free")
     print("[5] Vegetarian")
     print("[6] Healthy")
+<<<<<<< Updated upstream
     print("[7] Double the amount")
     print("[8] Cut in half")
+=======
+    print("[7] Double Amount")
+    print("[8] Cut Half Amount")
+>>>>>>> Stashed changes
     cuisine_choice = input("Enter the corresponding number: ").strip()
 
     transformation_name = ""
@@ -517,11 +549,19 @@ def main():
         new_ingredients, new_steps = transform_to_healthy(ingredients, steps)
         transformation_name = "Healthy"
     elif cuisine_choice == "7":
+<<<<<<< Updated upstream
         new_ingredients, new_steps = transform_double(ingredients, steps)
         cuisine = "Double the amount"
     elif cuisine_choice == "8":
         new_ingredients, new_steps = transform_half(ingredients, steps)
         cuisine = "Cut in half"
+=======
+        new_ingredients, new_steps = transformed_double_amount(ingredients, steps)
+        cuisine = "Double Amount"
+    elif cuisine_choice == "8":
+        new_ingredients, new_steps = transformed_cut_half_amount(ingredients, steps)
+        cuisine = "Cut Half Amount"
+>>>>>>> Stashed changes
     else:
         print("Invalid choice. Exiting.")
         return
