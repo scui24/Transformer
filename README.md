@@ -1,7 +1,7 @@
 # CS337 Project 3 -- Recipe Transformer
 # Group 3- Recipe Parsing & Recipe Transformer
 
-This project uses a variety of web scraping, natural language processing (NLP), and text-processing libraries/packages for designing and building a system that (i) parses online recipes into a useful data representation and (ii) transformer reciep into different cuisines or recipe styles. 
+This project uses a variety of web scraping, natural language processing (NLP), and text-processing libraries/packages for designing and building a system that (i) parsing online recipes into a useful data representation and (ii) transforming recipe into different cuisines or recipe styles. 
 
 ## Libraries/Packages Overview
 1. **requests**: The Requests is a Python library that allows you to send HTTP/1.1 requests extremely easily.
@@ -25,7 +25,7 @@ https://github.com/scui24/Transformer.git
 
 ## Steps to run the the python file in the submission folder
 
-Step 1: Open and Run the "Transformer.py" python file 
+Step 1: Open and run the **"Transformer.py"** python file.
 
 Step 2: Parse and transform recipe
 1. Run the code under **# parsing** part to make preparation for retriving any recipe you want from the recipe website: https://www.allrecipes.com.
