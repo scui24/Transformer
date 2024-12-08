@@ -203,7 +203,11 @@ def transform_to_vegetarian(ingredients, steps):
         "ham": "smoked tofu",
         "ground beef": "plant-based ground meat",
         "meatballs": "vegetarian meatballs",
-        "hot dog": "veggie dog"
+        "hot dog": "veggie dog",
+        "chicken stock": "vegetarian stock",
+        "chicken broth": "vegetarian broth",
+        "beef broth": "vegetarian broth",
+        "beef stock": "vegetarian stock"
     }
 
     transformed_ingredients = []
