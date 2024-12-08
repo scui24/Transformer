@@ -53,9 +53,22 @@ def transform_to_italian(ingredients, steps):
         "sour cream" : "ricotta cheese",
         "whipping cream" : "ricotta cheese",
         "bell peppers" : "sundried tomatoes", 
-        "spinach" : "argula",
+        "spinach" : "arugula",
         "parsley" : "fresh basil",
-        "bay leaf" : "rosemary"
+        "bay leaf" : "rosemary",
+        "flour" : "semolina flour",
+        "lettuce" : "arugula",
+        "ketchup" : "marinara sauce",
+        "sugar" : "honey",
+        "lime": "lemon zest",
+        "shrimp": "calamari",
+        "bacon": "pancetta",
+        "ham": "prosciutto",
+        "cauliflower": "fennel",
+        "yogurt": "plain greek yogurt",
+        "mayonnaise" : "aoli",
+        "soy sauce" : "tomato sauce"
+        
     }
 
     transformed_ingredients = []
