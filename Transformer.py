@@ -31,7 +31,6 @@ def get_recipe_details(url):
 
     return title, ingredients, steps
 
-
 def transform_to_italian(ingredients, steps):
     ingredient_map = {
         "onion powder" : "chopped onions",
@@ -183,16 +182,109 @@ def transform_to_lactose_free(ingredients, steps):
     
     return transformed_ingredients, transformed_steps
 
+def transform_to_vegetarian(ingredients, steps):
+    meat_to_vegetarian = {
+        "chicken": "tofu",
+        "beef": "tempeh",
+        "pork": "jackfruit",
+        "sausage": "vegan sausage",
+        "bacon": "vegan bacon",
+        "turkey": "seitan",
+        "ham": "smoked tofu",
+        "ground beef": "plant-based ground meat",
+        "meatballs": "vegetarian meatballs",
+        "hot dog": "veggie dog"
+    }
 
-def save_recipe_to_file(filename, title, ingredients, steps):
+    transformed_ingredients = []
+    for ingredient in ingredients:
+        for old, new in meat_to_vegetarian.items():
+            if old in ingredient.lower():
+                ingredient = re.sub(r'\b' + re.escape(old) + r'\b', new, ingredient, flags=re.IGNORECASE)
+        transformed_ingredients.append(ingredient)
+
+    transformed_steps = []
+    for step in steps:
+        for old, new in meat_to_vegetarian.items():
+            step = re.sub(r'\b' + re.escape(old) + r'\b', new, step, flags=re.IGNORECASE)
+        transformed_steps.append(step)
+
+    return transformed_ingredients, transformed_steps
+
+
+def transform_to_healthy(ingredients, steps):
+    unhealthy_to_healthy = {
+        "sugar": "honey",
+        "white flour": "whole wheat flour",
+        "butter": "olive oil",
+        "cream": "coconut cream",
+        "whole milk": "2% milk",
+        "mayonnaise": "Greek yogurt",
+        "salt": "reduced-sodium salt",
+        "fried": "baked",
+        "white rice": "brown rice or quinoa",
+        "potato chips": "sweet potato chips",
+        "lard": "avocado oil",
+        "pasta": "whole wheat pasta",
+        "candy": "dried fruits",
+        "deep-fried": "baked",
+        "ketchup": "tomato paste and spices"
+    }
+
+    transformed_ingredients = []
+    for ingredient in ingredients:
+        for old, new in unhealthy_to_healthy.items():
+            if old in ingredient.lower():
+                ingredient = re.sub(r'\b' + re.escape(old) + r'\b', new, ingredient, flags=re.IGNORECASE)
+        transformed_ingredients.append(ingredient)
+
+    transformed_steps = []
+    for step in steps:
+        for old, new in unhealthy_to_healthy.items():
+            step = re.sub(r'\b' + re.escape(old) + r'\b', new, step, flags=re.IGNORECASE)
+        transformed_steps.append(step)
+
+    return transformed_ingredients, transformed_steps
+
+
+def save_recipe_to_file(filename, title, original_ingredients, original_steps, transformed_ingredients, transformed_steps):
+    transformations = []
+
+    # Collect transformations for ingredients
+    for original, transformed in zip(original_ingredients, transformed_ingredients):
+        if original != transformed:  # Only log changes
+            transformations.append(f"{original} -> {transformed}")
+
+    # Write to file
     with open(filename, "w") as f:
-        f.write(f"{title}\n\nIngredients:\n")
-        for ingredient in ingredients:
+        f.write(f"{title}\n\n")
+        
+        # Add transformation details
+        if transformations:
+            f.write("Transformations:\n")
+            for transformation in transformations:
+                f.write(f"- {transformation}\n")
+            f.write("\n")
+        else:
+            f.write("No transformations were made to the ingredients.\n\n")
+
+        # Write original recipe
+        f.write("Original Recipe:\n")
+        f.write("Ingredients:\n")
+        for ingredient in original_ingredients:
             f.write(f"- {ingredient}\n")
         f.write("\nSteps:\n")
-        for i, step in enumerate(steps, 1):
+        for i, step in enumerate(original_steps, 1):
             f.write(f"{i}. {step}\n")
 
+        # Write transformed recipe
+        f.write("\n\nTransformed Recipe:\n")
+        f.write("Ingredients:\n")
+        for ingredient in transformed_ingredients:
+            f.write(f"- {ingredient}\n")
+        f.write("\nSteps:\n")
+        for i, step in enumerate(transformed_steps, 1):
+            f.write(f"{i}. {step}\n")
 
 def main():
     print("Welcome to the Recipe Transformer!")
@@ -211,6 +303,8 @@ def main():
     print("[2] Mexican")
     print("[3] Gluten-free")
     print("[4] Lactose-free")
+    print("[5] Vegetarian")
+    print("[6] Healthy")
     cuisine_choice = input("Enter the corresponding number: ").strip()
 
     if cuisine_choice == "1":
@@ -221,14 +315,29 @@ def main():
         cuisine = "Mexican"
     elif cuisine_choice == "3":
         new_ingredients, new_steps = transform_to_gluten_free(ingredients, steps)
-    elif cuisine_choice == "3":
+        cuisine = "Gluten Free"
+    elif cuisine_choice == "4":
         new_ingredients, new_steps = transform_to_lactose_free(ingredients, steps)
+        cuisine = "Lactose Free"
+    elif cuisine_choice == "5":
+        new_ingredients, new_steps = transform_to_vegetarian(ingredients, steps)
+        cuisine = "Vegetarian"
+    elif cuisine_choice == "6":
+        new_ingredients, new_steps = transform_to_healthy(ingredients, steps)
+        cuisine = "Healthy"
     else:
         print("Invalid choice. Exiting.")
         return
 
     output_filename = f"{title.replace(' ', '_')}_{cuisine}_Recipe.txt"
-    save_recipe_to_file(output_filename, f"{title} - {cuisine} Style", new_ingredients, new_steps)
+    save_recipe_to_file(
+        output_filename,
+        f"{title} - {cuisine} Style",
+        ingredients,
+        steps,
+        new_ingredients,
+        new_steps
+    )
     print(f"\nTransformed recipe saved to {output_filename}")
 
 if __name__ == "__main__":
