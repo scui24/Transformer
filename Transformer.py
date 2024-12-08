@@ -242,25 +242,72 @@ def transform_to_healthy(ingredients, steps):
 
 
 def transform_double(ingredients, steps):
+    special_fractions = {
+        '½': Fraction(1, 2),
+        '⅓': Fraction(1, 3),
+        '⅔': Fraction(2, 3),
+        '¼': Fraction(1, 4),
+        '¾': Fraction(3, 4),
+        '⅕': Fraction(1, 5),
+        '⅖': Fraction(2, 5),
+        '⅗': Fraction(3, 5),
+        '⅘': Fraction(4, 5),
+        '⅙': Fraction(1, 6),
+        '⅚': Fraction(5, 6),
+        '⅛': Fraction(1, 8),
+        '⅜': Fraction(3, 8),
+        '⅝': Fraction(5, 8),
+        '⅞': Fraction(7, 8),
+    }
 
     def double_match(match):
         token = match.group()
-        if token == '½':
-            doubled = 1
+        if token in special_fractions:
+            doubled = special_fractions[token] * 2
+        elif '/' in token:
+            try:
+                fraction = Fraction(token)
+                doubled = fraction * 2
+            except ValueError:
+                return token
         elif ' ' in token:
-            whole, fraction = token.split()
-            total = int(whole) + float(Fraction(1, 2))
-            doubled = total * 2
+            parts = token.split()
+            if len(parts) == 2 and parts[1] in special_fractions:
+                whole, fraction = parts
+                total = int(whole) + special_fractions[fraction]
+                doubled = Fraction(total * 2)
+            else:
+                return token
         else:
-            doubled = int(token) * 2
+            try:
+                doubled = Fraction(int(token) * 2)
+            except ValueError:
+                return token
 
-        return str(int(doubled)) if int(doubled) == doubled else str(doubled)
+        if isinstance(doubled, Fraction):
+            simplified = str(doubled.limit_denominator())
+        else:
+            simplified = str(int(doubled)) if doubled.is_integer() else str(doubled)
+        
+        return simplified
+
+    def simplify_fraction_match(match):
+        token = match.group()
+        try:
+            fraction = Fraction(token)
+            simplified = str(fraction)
+            return simplified
+        except ValueError:
+            return token
+
+    fraction_pattern = r'\b\d+/\d+\b'
 
     new_ingredients = []
     for ingredient in ingredients:
-        pattern = r'\d+\s+½|½|\d+'
+        pattern = r'\d+\s+[^0-9\s]|[^0-9\s]|\d+'
         updated_ingredient = re.sub(pattern, double_match, ingredient)
-        new_ingredients.append(updated_ingredient)
+        updated_string = re.sub(fraction_pattern, simplify_fraction_match, updated_ingredient)
+        new_ingredients.append(updated_string)
 
     def double_match_steps(match):
         token = match.group()
@@ -273,8 +320,95 @@ def transform_double(ingredients, steps):
 
     new_steps = []
     for step in steps:
-        new_step = re.sub(r'\b\d+\b', double_match_steps, step)
-        new_steps.append(new_step)
+        updated_step = re.sub(r'\b\d+\b', double_match_steps, step)
+        updated_string2 = re.sub(fraction_pattern, simplify_fraction_match, updated_step)
+        new_steps.append(updated_string2)
+
+    return new_ingredients, new_steps
+
+
+def transform_half(ingredients, steps):
+    special_fractions = {
+        '½': Fraction(1, 2),
+        '⅓': Fraction(1, 3),
+        '⅔': Fraction(2, 3),
+        '¼': Fraction(1, 4),
+        '¾': Fraction(3, 4),
+        '⅕': Fraction(1, 5),
+        '⅖': Fraction(2, 5),
+        '⅗': Fraction(3, 5),
+        '⅘': Fraction(4, 5),
+        '⅙': Fraction(1, 6),
+        '⅚': Fraction(5, 6),
+        '⅛': Fraction(1, 8),
+        '⅜': Fraction(3, 8),
+        '⅝': Fraction(5, 8),
+        '⅞': Fraction(7, 8),
+    }
+
+    def half_match(match):
+        token = match.group()
+        if token in special_fractions:
+            halved = special_fractions[token] / 2
+        elif '/' in token:
+            try:
+                fraction = Fraction(token)
+                halved = fraction / 2
+            except ValueError:
+                return token
+        elif ' ' in token:
+            parts = token.split()
+            if len(parts) == 2 and parts[1] in special_fractions:
+                whole, fraction = parts
+                total = int(whole) + special_fractions[fraction]
+                halved = Fraction(total / 2)
+            else:
+                return token
+        else:
+            try:
+                halved = Fraction(int(token) / 2)
+            except ValueError:
+                return token
+
+        if isinstance(halved, Fraction):
+            simplified = str(halved.limit_denominator())
+        else:
+            simplified = str(int(halved)) if halved.is_integer() else str(halved)
+        
+        return simplified
+
+    def simplify_fraction_match(match):
+        token = match.group()
+        try:
+            fraction = Fraction(token)
+            simplified = str(fraction)
+            return simplified
+        except ValueError:
+            return token
+
+    fraction_pattern = r'\b\d+/\d+\b'
+
+    new_ingredients = []
+    for ingredient in ingredients:
+        pattern = r'\d+\s+[^0-9\s]|[^0-9\s]|\d+'
+        updated_ingredient = re.sub(pattern, half_match, ingredient)
+        updated_string = re.sub(fraction_pattern, simplify_fraction_match, updated_ingredient)
+        new_ingredients.append(updated_string)
+
+    def half_match_steps(match):
+        token = match.group()
+        if re.search(r'(degrees|minutes|minute|seconds|second|hour|hours)\b', match.string[match.end():], re.IGNORECASE):
+            return token
+        if re.search(r'(F|C|°)', match.string[match.end():]):
+            return token
+        halved = int(token) / 2
+        return str(int(halved)) if halved.is_integer() else str(halved)
+
+    new_steps = []
+    for step in steps:
+        updated_step = re.sub(r'\b\d+\b', half_match_steps, step)
+        updated_string2 = re.sub(fraction_pattern, simplify_fraction_match, updated_step)
+        new_steps.append(updated_string2)
 
     return new_ingredients, new_steps
 
@@ -340,6 +474,7 @@ def main():
     print("[5] Vegetarian")
     print("[6] Healthy")
     print("[7] Double the amount")
+    print("[8] Cut in half")
     cuisine_choice = input("Enter the corresponding number: ").strip()
 
     transformation_name = ""
@@ -364,6 +499,9 @@ def main():
     elif cuisine_choice == "7":
         new_ingredients, new_steps = transform_double(ingredients, steps)
         cuisine = "Double the amount"
+    elif cuisine_choice == "8":
+        new_ingredients, new_steps = transform_half(ingredients, steps)
+        cuisine = "Cut in half"
     else:
         print("Invalid choice. Exiting.")
         return
