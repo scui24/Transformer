@@ -1,6 +1,5 @@
 import requests
 import re
-from fractions import Fraction
 from bs4 import BeautifulSoup
 from nltk.tokenize import sent_tokenize
 
@@ -240,8 +239,6 @@ def transform_to_healthy(ingredients, steps):
 
     return transformed_ingredients, transformed_steps
 
-
-
 def  transformed_double_amount(ingredients, steps):
      transformed_ingredients = []
      for ingredient in ingredients:
@@ -266,7 +263,6 @@ def transformed_cut_half_amount(ingredients, steps):
          
      return transformed_ingredients, transformed_steps
 
-
 def print_recipe(transformations, ingredients, steps):
     print("Transformation type:")
     print(f"- {transformations}")
@@ -280,33 +276,40 @@ def print_recipe(transformations, ingredients, steps):
     print("Steps:")
     for step in steps:
         print(f"- {step}")
+    
+def save_recipe_to_file(filename, title, original_ingredients, original_steps, transformed_ingredients, transformed_steps):
+    transformations = []
 
+    for original, transformed in zip(original_ingredients, transformed_ingredients):
+        if original != transformed:  # Only log changes
+            transformations.append(f"{original} -> {transformed}")
 
-def save_recipe_to_file(filename, title, original_ingredients, original_steps, transformed_ingredients, transformed_steps, transformation_name):
     with open(filename, "w") as f:
-   
-        f.write(f"Transformation: {transformation_name}\n\n")
+        f.write(f"{title}\n\n")
+        
+        if transformations:
+            f.write("Transformations:\n")
+            for transformation in transformations:
+                f.write(f"- {transformation}\n")
+            f.write("\n")
+        else:
+            f.write("No transformations were made to the ingredients.\n\n")
 
-
-        f.write("Input Recipe:\n")
+        f.write("Original Recipe:\n")
         f.write("Ingredients:\n")
         for ingredient in original_ingredients:
             f.write(f"- {ingredient}\n")
         f.write("\nSteps:\n")
         for i, step in enumerate(original_steps, 1):
             f.write(f"{i}. {step}\n")
-        f.write("\n\n")
 
-
-        f.write("Transformed Recipe:\n")
+        f.write("\n\nTransformed Recipe:\n")
         f.write("Ingredients:\n")
         for ingredient in transformed_ingredients:
             f.write(f"- {ingredient}\n")
         f.write("\nSteps:\n")
         for i, step in enumerate(transformed_steps, 1):
             f.write(f"{i}. {step}\n")
-
-
 
 def main():
     print("Welcome to the Recipe Transformer!")
@@ -320,9 +323,9 @@ def main():
     title, ingredients, steps = recipe_details
     print(f"\nSuccessfully fetched recipe: {title}\n")
 
-    print("What would you like to transform this recipe into?")
-    print("[1] Italian cuisine")
-    print("[2] Mexican cuisine")
+    print("What cuisine would you like to transform this recipe into?")
+    print("[1] Italian")
+    print("[2] Mexican")
     print("[3] Gluten-free")
     print("[4] Lactose-free")
     print("[5] Vegetarian")
@@ -331,53 +334,45 @@ def main():
     print("[8] Cut Half Amount")
     cuisine_choice = input("Enter the corresponding number: ").strip()
 
-    transformation_name = ""
     if cuisine_choice == "1":
         new_ingredients, new_steps = transform_to_italian(ingredients, steps)
-        transformation_name = "Italian"
+        cuisine = "Italian"
     elif cuisine_choice == "2":
         new_ingredients, new_steps = transform_to_mexican(ingredients, steps)
-        transformation_name = "Mexican"
+        cuisine = "Mexican"
     elif cuisine_choice == "3":
         new_ingredients, new_steps = transform_to_gluten_free(ingredients, steps)
-        transformation_name = "Gluten Free"
+        cuisine = "Gluten Free"
     elif cuisine_choice == "4":
         new_ingredients, new_steps = transform_to_lactose_free(ingredients, steps)
-        transformation_name = "Lactose Free"
+        cuisine = "Lactose Free"
     elif cuisine_choice == "5":
         new_ingredients, new_steps = transform_to_vegetarian(ingredients, steps)
-        transformation_name = "Vegetarian"
+        cuisine = "Vegetarian"
     elif cuisine_choice == "6":
         new_ingredients, new_steps = transform_to_healthy(ingredients, steps)
-        transformation_name = "Healthy"
+        cuisine = "Healthy"
     elif cuisine_choice == "7":
         new_ingredients, new_steps = transformed_double_amount(ingredients, steps)
         cuisine = "Double Amount"
     elif cuisine_choice == "8":
         new_ingredients, new_steps = transformed_cut_half_amount(ingredients, steps)
         cuisine = "Cut Half Amount"
+        
     else:
         print("Invalid choice. Exiting.")
         return
 
-    # Print 
-    print("\nTransformed Recipe (Console Output):")
-    print_recipe(transformation_name, new_ingredients, new_steps)
-
-# save to txt
-    output_filename = f"{title.replace(' ', '_')}_{transformation_name}_Recipe.txt"
+    output_filename = f"{title.replace(' ', '_')}_{cuisine}_Recipe.txt"
     save_recipe_to_file(
         output_filename,
-        title,
+        f"{title} - {cuisine} Style",
         ingredients,
         steps,
         new_ingredients,
-        new_steps,
-        transformation_name 
+        new_steps
     )
     print(f"\nTransformed recipe saved to {output_filename}")
-
-
 
 if __name__ == "__main__":
     main()
