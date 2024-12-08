@@ -39,10 +39,8 @@ def transform_to_italian(ingredients, steps):
         "noodles" : "spaghetti",
         "vinegar" : "cooking wine",
         "vegetable oil": "extra virgin olive oil",
-        "butter": "extra virgin olive oil",
         "ground beef": "italian sausage",
         "cheddar cheese": "parmesan cheese",
-        "swiss cheese": "parmesan cheese",
         "bread": "focaccia",
         "tomato paste": "fresh tomatoes",
         "cream": "mascarpone",
@@ -51,24 +49,10 @@ def transform_to_italian(ingredients, steps):
         "onion": "shallots",
         "garlic powder": "fresh garlic",
         "sour cream" : "ricotta cheese",
-        "whipping cream" : "ricotta cheese",
         "bell peppers" : "sundried tomatoes", 
-        "spinach" : "arugula",
+        "spinach" : "argula",
         "parsley" : "fresh basil",
-        "bay leaf" : "rosemary",
-        "flour" : "semolina flour",
-        "lettuce" : "arugula",
-        "ketchup" : "marinara sauce",
-        "sugar" : "honey",
-        "lime": "lemon zest",
-        "shrimp": "calamari",
-        "bacon": "pancetta",
-        "ham": "prosciutto",
-        "cauliflower": "fennel",
-        "yogurt": "plain greek yogurt",
-        "mayonnaise" : "aoli",
-        "soy sauce" : "tomato sauce"
-        
+        "bay leaf" : "rosemary"
     }
 
     transformed_ingredients = []
@@ -203,11 +187,7 @@ def transform_to_vegetarian(ingredients, steps):
         "ham": "smoked tofu",
         "ground beef": "plant-based ground meat",
         "meatballs": "vegetarian meatballs",
-        "hot dog": "veggie dog",
-        "chicken stock": "vegetarian stock",
-        "chicken broth": "vegetarian broth",
-        "beef broth": "vegetarian broth",
-        "beef stock": "vegetarian stock"
+        "hot dog": "veggie dog"
     }
 
     transformed_ingredients = []
@@ -261,178 +241,6 @@ def transform_to_healthy(ingredients, steps):
     return transformed_ingredients, transformed_steps
 
 
-<<<<<<< Updated upstream
-def transform_double(ingredients, steps):
-    special_fractions = {
-        '½': Fraction(1, 2),
-        '⅓': Fraction(1, 3),
-        '⅔': Fraction(2, 3),
-        '¼': Fraction(1, 4),
-        '¾': Fraction(3, 4),
-        '⅕': Fraction(1, 5),
-        '⅖': Fraction(2, 5),
-        '⅗': Fraction(3, 5),
-        '⅘': Fraction(4, 5),
-        '⅙': Fraction(1, 6),
-        '⅚': Fraction(5, 6),
-        '⅛': Fraction(1, 8),
-        '⅜': Fraction(3, 8),
-        '⅝': Fraction(5, 8),
-        '⅞': Fraction(7, 8),
-    }
-
-    def double_match(match):
-        token = match.group()
-        if token in special_fractions:
-            doubled = special_fractions[token] * 2
-        elif '/' in token:
-            try:
-                fraction = Fraction(token)
-                doubled = fraction * 2
-            except ValueError:
-                return token
-        elif ' ' in token:
-            parts = token.split()
-            if len(parts) == 2 and parts[1] in special_fractions:
-                whole, fraction = parts
-                total = int(whole) + special_fractions[fraction]
-                doubled = Fraction(total * 2)
-            else:
-                return token
-        else:
-            try:
-                doubled = Fraction(int(token) * 2)
-            except ValueError:
-                return token
-
-        if isinstance(doubled, Fraction):
-            simplified = str(doubled.limit_denominator())
-        else:
-            simplified = str(int(doubled)) if doubled.is_integer() else str(doubled)
-        
-        return simplified
-
-    def simplify_fraction_match(match):
-        token = match.group()
-        try:
-            fraction = Fraction(token)
-            simplified = str(fraction)
-            return simplified
-        except ValueError:
-            return token
-
-    fraction_pattern = r'\b\d+/\d+\b'
-
-    new_ingredients = []
-    for ingredient in ingredients:
-        pattern = r'\d+\s+[^0-9\s]|[^0-9\s]|\d+'
-        updated_ingredient = re.sub(pattern, double_match, ingredient)
-        updated_string = re.sub(fraction_pattern, simplify_fraction_match, updated_ingredient)
-        new_ingredients.append(updated_string)
-
-    def double_match_steps(match):
-        token = match.group()
-        if re.search(r'(degrees|minutes|minute|seconds|second|hour|hours)\b', match.string[match.end():], re.IGNORECASE):
-            return token
-        if re.search(r'(F|C|°)', match.string[match.end():]):
-            return token
-        doubled = int(token) * 2
-        return str(doubled)
-
-    new_steps = []
-    for step in steps:
-        updated_step = re.sub(r'\b\d+\b', double_match_steps, step)
-        updated_string2 = re.sub(fraction_pattern, simplify_fraction_match, updated_step)
-        new_steps.append(updated_string2)
-
-    return new_ingredients, new_steps
-
-
-def transform_half(ingredients, steps):
-    special_fractions = {
-        '½': Fraction(1, 2),
-        '⅓': Fraction(1, 3),
-        '⅔': Fraction(2, 3),
-        '¼': Fraction(1, 4),
-        '¾': Fraction(3, 4),
-        '⅕': Fraction(1, 5),
-        '⅖': Fraction(2, 5),
-        '⅗': Fraction(3, 5),
-        '⅘': Fraction(4, 5),
-        '⅙': Fraction(1, 6),
-        '⅚': Fraction(5, 6),
-        '⅛': Fraction(1, 8),
-        '⅜': Fraction(3, 8),
-        '⅝': Fraction(5, 8),
-        '⅞': Fraction(7, 8),
-    }
-
-    def half_match(match):
-        token = match.group()
-        if token in special_fractions:
-            halved = special_fractions[token] / 2
-        elif '/' in token:
-            try:
-                fraction = Fraction(token)
-                halved = fraction / 2
-            except ValueError:
-                return token
-        elif ' ' in token:
-            parts = token.split()
-            if len(parts) == 2 and parts[1] in special_fractions:
-                whole, fraction = parts
-                total = int(whole) + special_fractions[fraction]
-                halved = Fraction(total / 2)
-            else:
-                return token
-        else:
-            try:
-                halved = Fraction(int(token) / 2)
-            except ValueError:
-                return token
-
-        if isinstance(halved, Fraction):
-            simplified = str(halved.limit_denominator())
-        else:
-            simplified = str(int(halved)) if halved.is_integer() else str(halved)
-        
-        return simplified
-
-    def simplify_fraction_match(match):
-        token = match.group()
-        try:
-            fraction = Fraction(token)
-            simplified = str(fraction)
-            return simplified
-        except ValueError:
-            return token
-
-    fraction_pattern = r'\b\d+/\d+\b'
-
-    new_ingredients = []
-    for ingredient in ingredients:
-        pattern = r'\d+\s+[^0-9\s]|[^0-9\s]|\d+'
-        updated_ingredient = re.sub(pattern, half_match, ingredient)
-        updated_string = re.sub(fraction_pattern, simplify_fraction_match, updated_ingredient)
-        new_ingredients.append(updated_string)
-
-    def half_match_steps(match):
-        token = match.group()
-        if re.search(r'(degrees|minutes|minute|seconds|second|hour|hours)\b', match.string[match.end():], re.IGNORECASE):
-            return token
-        if re.search(r'(F|C|°)', match.string[match.end():]):
-            return token
-        halved = int(token) / 2
-        return str(int(halved)) if halved.is_integer() else str(halved)
-
-    new_steps = []
-    for step in steps:
-        updated_step = re.sub(r'\b\d+\b', half_match_steps, step)
-        updated_string2 = re.sub(fraction_pattern, simplify_fraction_match, updated_step)
-        new_steps.append(updated_string2)
-
-    return new_ingredients, new_steps
-=======
 
 def  transformed_double_amount(ingredients, steps):
      transformed_ingredients = []
@@ -457,7 +265,6 @@ def transformed_cut_half_amount(ingredients, steps):
          transformed_steps.append(step)
          
      return transformed_ingredients, transformed_steps
->>>>>>> Stashed changes
 
 
 def print_recipe(transformations, ingredients, steps):
@@ -520,13 +327,8 @@ def main():
     print("[4] Lactose-free")
     print("[5] Vegetarian")
     print("[6] Healthy")
-<<<<<<< Updated upstream
-    print("[7] Double the amount")
-    print("[8] Cut in half")
-=======
     print("[7] Double Amount")
     print("[8] Cut Half Amount")
->>>>>>> Stashed changes
     cuisine_choice = input("Enter the corresponding number: ").strip()
 
     transformation_name = ""
@@ -549,19 +351,11 @@ def main():
         new_ingredients, new_steps = transform_to_healthy(ingredients, steps)
         transformation_name = "Healthy"
     elif cuisine_choice == "7":
-<<<<<<< Updated upstream
-        new_ingredients, new_steps = transform_double(ingredients, steps)
-        cuisine = "Double the amount"
-    elif cuisine_choice == "8":
-        new_ingredients, new_steps = transform_half(ingredients, steps)
-        cuisine = "Cut in half"
-=======
         new_ingredients, new_steps = transformed_double_amount(ingredients, steps)
         cuisine = "Double Amount"
     elif cuisine_choice == "8":
         new_ingredients, new_steps = transformed_cut_half_amount(ingredients, steps)
         cuisine = "Cut Half Amount"
->>>>>>> Stashed changes
     else:
         print("Invalid choice. Exiting.")
         return
