@@ -48,6 +48,6 @@ The command link will ask which transformation you would like to perform and the
 
 Step 3: Select the corresponding number of the transformation you would like to perform. 
 
-The output will be printed in the command line and a saved as a txt file containing the name of the transformation, the input reicpe, and the transformed recipe. To perform a new transformation run the file again and repeat the steps. 
+The output will be saved as a txt file, named after the title of the Recipe and the transformation done on it, and containing the name of the transformation, the input reicpe, and the transformed recipe. To perform a new transformation run the file again and repeat the steps. 
 
 
